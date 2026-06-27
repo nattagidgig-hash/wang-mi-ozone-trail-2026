@@ -167,7 +167,7 @@ export default function SocialCards({ cards }: SocialCardsProps) {
     visibleEntries.sort((a, b) => a.slot - b.slot);
 
     let activeSlot: number | null = null;
-    let leaveTimer: NodeJS.Timeout | null = null;
+    let leaveTimer: ReturnType<typeof setTimeout> | null = null;
     const centerSlot = visibleEntries.length >> 1;
 
     const updateHoverLayout = (hoveredSlot: number | null) => {
@@ -262,7 +262,7 @@ export default function SocialCards({ cards }: SocialCardsProps) {
                 <img src={card.imgUrl} loading="lazy" alt={card.alt || `Card ${index}`} className="absolute inset-0 w-full h-full object-cover z-10" />
               </div>
             );
-            const cardStyle = "fan-card block w-28 sm:w-36 md:w-44 lg:w-52 aspect-[3/4] rounded-2xl overflow-hidden shadow-xl";
+            const cardStyle = "fan-card block w-28 sm:w-36 md:w-44 lg:w-52 aspect-[4/3] rounded-2xl overflow-hidden shadow-xl";
             return card.linkUrl ? (
               <a key={index} href={card.linkUrl} target={card.linkUrl.startsWith("http") ? "_blank" : "_self"} rel="noopener noreferrer" className={cardStyle + " cursor-pointer"}>{image}</a>
             ) : (
@@ -274,15 +274,15 @@ export default function SocialCards({ cards }: SocialCardsProps) {
 
       {needsPagination && (
         <div className="flex items-center justify-center gap-4 mt-4 md:mt-6 z-30">
-          <button className={`${ARROW_CLASSES} w-10 h-10 md:w-12 md:h-12`} onClick={() => cycle("left")} aria-label="Previous">
+          <button type="button" className={`${ARROW_CLASSES} w-10 h-10 md:w-12 md:h-12`} onClick={() => cycle("left")} aria-label="Previous">
             {chevron("left")}
           </button>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" role="tablist" aria-label="Cards">
             {cards.map((_, i) => (
-              <span key={i} className={`w-2 h-2 rounded-full transition-all duration-300 ${i === centerIndex ? "bg-black/70 dark:bg-white/80 scale-[1.3]" : "bg-black/15 dark:bg-white/15"}`} />
+              <span key={i} role="tab" aria-selected={i === centerIndex} className={`w-2 h-2 rounded-full transition-all duration-300 ${i === centerIndex ? "bg-black/70 dark:bg-white/80 scale-[1.3]" : "bg-black/15 dark:bg-white/15"}`} />
             ))}
           </div>
-          <button className={`${ARROW_CLASSES} w-10 h-10 md:w-12 md:h-12`} onClick={() => cycle("right")} aria-label="Next">
+          <button type="button" className={`${ARROW_CLASSES} w-10 h-10 md:w-12 md:h-12`} onClick={() => cycle("right")} aria-label="Next">
             {chevron("right")}
           </button>
         </div>
