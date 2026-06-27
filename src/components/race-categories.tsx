@@ -41,7 +41,7 @@ const categories = [
 
 export default function RaceCategories() {
   return (
-    <section id="categories" className="py-20 px-4 bg-cream">
+    <section id="categories" className="py-20 px-4 bg-cream scroll-mt-24">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-14">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-earth-darker font-[family-name:var(--font-heading)] mb-4">
@@ -72,7 +72,7 @@ export default function RaceCategories() {
                       <p className="text-earth text-sm lg:text-base font-medium">{cat.subtitle}</p>
                     </div>
                   </div>
-                  <Badge variant="secondary" className="bg-cream-alt text-earth-dark text-xs lg:text-sm">
+                  <Badge variant="secondary" className="bg-cream-alt text-earth-dark text-xs lg:text-sm shrink-0">
                     {cat.badge}
                   </Badge>
                 </div>

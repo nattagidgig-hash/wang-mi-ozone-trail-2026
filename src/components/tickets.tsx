@@ -60,7 +60,7 @@ const tickets = [
 
 export default function Tickets() {
   return (
-    <section id="tickets" className="py-20 px-4 bg-cream">
+    <section id="tickets" className="py-20 px-4 bg-cream scroll-mt-24">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-14">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-earth-darker font-[family-name:var(--font-heading)] mb-4">

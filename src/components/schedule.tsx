@@ -39,7 +39,7 @@ const days = [
 
 export default function Schedule() {
   return (
-    <section id="schedule" className="py-20 px-4 bg-soil relative overflow-hidden">
+    <section id="schedule" className="py-20 px-4 bg-soil relative overflow-hidden scroll-mt-24">
       <div className="absolute inset-0 bg-noise" />
       <div className="max-w-4xl mx-auto relative z-10">
         <div className="text-center mb-14">

@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Pause, Play } from "lucide-react"
+import { useState, useEffect, useCallback, useRef } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Pause, Play, ChevronLeft, ChevronRight } from "lucide-react"
 
 const images = [
   { src: "/ภาพฝันวังน้ำเขียว (5).png", alt: "วิวทิวทัศน์วังน้ำเขียว" },
@@ -15,8 +16,10 @@ const images = [
 ]
 
 export default function AutoScrollGallery() {
+  const [current, setCurrent] = useState(0)
   const [paused, setPaused] = useState(false)
   const [reduced, setReduced] = useState(false)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches)
@@ -25,6 +28,22 @@ export default function AutoScrollGallery() {
     mq.addEventListener("change", handler)
     return () => mq.removeEventListener("change", handler)
   }, [])
+
+  const next = useCallback(() => {
+    setCurrent((prev) => (prev + 1) % images.length)
+  }, [])
+
+  const prev = useCallback(() => {
+    setCurrent((prev) => (prev - 1 + images.length) % images.length)
+  }, [])
+
+  useEffect(() => {
+    if (paused || reduced) return
+    intervalRef.current = setInterval(next, 4000)
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+  }, [paused, reduced, next])
 
   return (
     <section className="py-20 px-4 bg-cream overflow-hidden" aria-label="ภาพบรรยากาศ">
@@ -37,42 +56,62 @@ export default function AutoScrollGallery() {
         </p>
       </div>
 
-      <div className="relative max-w-7xl mx-auto">
-        <div className="overflow-hidden rounded-2xl shadow-xl shadow-earth/10">
-          <div
-            className={`flex gap-6 ${!reduced ? "animate-scroll" : ""}`}
-            style={{
-              width: "max-content",
-              animationPlayState: paused ? "paused" : "running",
-            }}
+      <div className="relative max-w-5xl mx-auto">
+        <div className="relative aspect-[16/9] overflow-hidden rounded-2xl shadow-xl shadow-earth/10 bg-cream-alt">
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={current}
+              src={images[current].src}
+              alt={images[current].alt}
+              className="absolute inset-0 w-full h-full object-cover"
+              initial={{ opacity: 0, x: 60 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -60 }}
+              transition={{ duration: 0.35, ease: "easeInOut" }}
+            />
+          </AnimatePresence>
+
+          <div className="absolute inset-0 bg-gradient-to-t from-soil/20 to-transparent pointer-events-none" />
+
+          <button
+            onClick={prev}
+            className="absolute left-3 top-1/2 -translate-y-1/2 bg-soil/50 hover:bg-soil/70 text-cream rounded-full p-2 transition-all backdrop-blur-sm cursor-pointer z-10 shadow-lg"
+            aria-label="ภาพก่อนหน้า"
           >
-            {[...images, ...images].map((img, i) => (
-              <div
-                key={`${img.src}-${i}`}
-                className="w-[85vw] sm:w-[65vw] md:w-[50vw] lg:w-[40vw] shrink-0"
-                aria-hidden={i >= images.length ? "true" : undefined}
-              >
-                <div className="aspect-[16/9] overflow-hidden rounded-xl">
-                  <img
-                    src={img.src}
-                    alt={i < images.length ? img.alt : ""}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                    draggable={false}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+
+          <button
+            onClick={next}
+            className="absolute right-3 top-1/2 -translate-y-1/2 bg-soil/50 hover:bg-soil/70 text-cream rounded-full p-2 transition-all backdrop-blur-sm cursor-pointer z-10 shadow-lg"
+            aria-label="ภาพถัดไป"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+
+          <button
+            onClick={() => setPaused(!paused)}
+            className="absolute bottom-4 right-4 bg-soil/50 hover:bg-soil/70 text-cream rounded-full p-2.5 transition-all backdrop-blur-sm cursor-pointer z-10 shadow-lg"
+            aria-label={paused ? "เล่นต่อ" : "หยุดชั่วคราว"}
+          >
+            {paused ? <Play className="h-5 w-5" /> : <Pause className="h-5 w-5" />}
+          </button>
         </div>
 
-        <button
-          onClick={() => setPaused(!paused)}
-          className="absolute bottom-4 right-4 bg-soil/50 hover:bg-soil/70 text-cream rounded-full p-2.5 transition-all backdrop-blur-sm cursor-pointer z-10 shadow-lg"
-          aria-label={paused ? "เล่นต่อ" : "หยุดชั่วคราว"}
-        >
-          {paused ? <Play className="h-5 w-5" /> : <Pause className="h-5 w-5" />}
-        </button>
+        <div className="flex justify-center gap-2 mt-4" role="tablist" aria-label="เลือกภาพ">
+          {images.map((img, i) => (
+            <button
+              key={img.src}
+              onClick={() => { setCurrent(i); setPaused(true) }}
+              role="tab"
+              aria-selected={i === current}
+              aria-label={`ภาพที่ ${i + 1}: ${img.alt}`}
+              className={`w-2.5 h-2.5 rounded-full transition-all cursor-pointer ${
+                i === current ? "bg-earth w-6" : "bg-earth-light/40 hover:bg-earth-light/60"
+              }`}
+            />
+          ))}
+        </div>
       </div>
     </section>
   )

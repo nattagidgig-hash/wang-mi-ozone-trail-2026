@@ -42,7 +42,7 @@ const addons = [
 
 export default function Addons() {
   return (
-    <section id="addons" aria-label="บริการเสริม" className="py-20 px-4 bg-cream-alt/20">
+    <section id="addons" aria-label="บริการเสริม" className="py-20 px-4 bg-cream-alt/20 scroll-mt-24">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-14">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-earth-darker font-[family-name:var(--font-heading)] mb-4">

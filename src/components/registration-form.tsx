@@ -83,7 +83,7 @@ export default function RegistrationForm() {
   }
 
   return (
-    <section id="register" aria-label="แบบฟอร์มสมัครงาน" className="py-20 px-4 bg-cream-alt/20">
+    <section id="register" aria-label="แบบฟอร์มสมัครงาน" className="py-20 px-4 bg-cream-alt/20 scroll-mt-24">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-10">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-earth-darker font-[family-name:var(--font-heading)] mb-4">
@@ -326,24 +326,24 @@ export default function RegistrationForm() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium lg:text-base text-earth-darker mb-1">เพศ</label>
-                    <select className="w-full p-2.5 border border-cream-alt rounded-lg text-sm lg:text-base bg-transparent text-earth-darker">
+                    <select name="gender" className="w-full p-2.5 border border-cream-alt rounded-lg text-sm lg:text-base bg-transparent text-earth-darker">
                       <option value="" disabled>เลือกเพศ</option>
-                      <option>ชาย</option>
-                      <option>หญิง</option>
-                      <option>ไม่ระบุ</option>
+                      <option value="male">ชาย</option>
+                      <option value="female">หญิง</option>
+                      <option value="unspecified">ไม่ระบุ</option>
                     </select>
                   </div>
                   <div>
                     <label className="block text-sm font-medium lg:text-base text-earth-darker mb-1">วันเกิด</label>
-                    <input type="date" className="w-full p-2.5 border border-cream-alt rounded-lg text-sm lg:text-base bg-transparent text-earth-darker" />
+                    <input type="date" name="birthDate" className="w-full p-2.5 border border-cream-alt rounded-lg text-sm lg:text-base bg-transparent text-earth-darker" />
                   </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium lg:text-base text-earth-darker mb-1">เสื้อที่ระลึก (ขนาด)</label>
                   <div className="flex gap-2 flex-wrap">
                     {["XS", "S", "M", "L", "XL", "2XL", "3XL"].map((size) => (
-                      <label key={size} className="flex items-center gap-1.5 text-sm lg:text-base p-2 border border-cream-alt rounded-lg hover:border-earth-light/40 cursor-pointer text-earth-dark">
-                        <input type="radio" name="shirtSize" className="accent-earth" />
+                      <label key={size} className="flex items-center gap-1.5 text-sm lg:text-base p-2 border border-cream-alt rounded-lg hover:border-earth-light/40 cursor-pointer text-earth-dark has-[:checked]:border-earth has-[:checked]:bg-cream transition-colors">
+                        <input type="radio" name="shirtSize" value={size} className="accent-earth" />
                         {size}
                       </label>
                     ))}
