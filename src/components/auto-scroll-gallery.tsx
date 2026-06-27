@@ -1,11 +1,10 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Pause, Play, ChevronLeft, ChevronRight } from "lucide-react"
 
 const images = [
-  { src: "/ภาพฝันวังน้ำเขียว (5).png", alt: "วิวทิวทัศน์วังน้ำเขียว" },
   { src: "/ภาพฝันวังน้ำเขียว (6).png", alt: "เส้นทางเดินป่าวังน้ำเขียว" },
   { src: "/ภาพฝันวังน้ำเขียว (7).png", alt: "ธรรมชาติวังน้ำเขียว" },
   { src: "/ภาพฝันวังน้ำเขียว (8).png", alt: "บรรยากาศชุมชนวังน้ำเขียว" },
@@ -18,32 +17,45 @@ const images = [
 export default function AutoScrollGallery() {
   const [current, setCurrent] = useState(0)
   const [paused, setPaused] = useState(false)
-  const [reduced, setReduced] = useState(false)
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const pausedRef = useRef(false)
+  const reducedRef = useRef(false)
 
   useEffect(() => {
-    setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+    reducedRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
-    const handler = (e: MediaQueryListEvent) => setReduced(e.matches)
+    const handler = (e: MediaQueryListEvent) => { reducedRef.current = e.matches }
     mq.addEventListener("change", handler)
     return () => mq.removeEventListener("change", handler)
   }, [])
 
-  const next = useCallback(() => {
-    setCurrent((prev) => (prev + 1) % images.length)
-  }, [])
-
-  const prev = useCallback(() => {
-    setCurrent((prev) => (prev - 1 + images.length) % images.length)
-  }, [])
-
   useEffect(() => {
-    if (paused || reduced) return
-    intervalRef.current = setInterval(next, 4000)
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current)
-    }
-  }, [paused, reduced, next])
+    const interval = setInterval(() => {
+      if (pausedRef.current || reducedRef.current) return
+      setCurrent((prev) => (prev + 1) % images.length)
+    }, 3500)
+    return () => clearInterval(interval)
+  }, [])
+
+  const next = () => {
+    setCurrent((prev) => (prev + 1) % images.length)
+  }
+
+  const prev = () => {
+    setCurrent((prev) => (prev - 1 + images.length) % images.length)
+  }
+
+  const togglePause = () => {
+    setPaused((p) => {
+      pausedRef.current = !p
+      return !p
+    })
+  }
+
+  const goTo = (i: number) => {
+    setCurrent(i)
+    setPaused(true)
+    pausedRef.current = true
+  }
 
   return (
     <section className="py-20 px-4 bg-cream overflow-hidden" aria-label="ภาพบรรยากาศ">
@@ -90,7 +102,7 @@ export default function AutoScrollGallery() {
           </button>
 
           <button
-            onClick={() => setPaused(!paused)}
+            onClick={togglePause}
             className="absolute bottom-4 right-4 bg-soil/50 hover:bg-soil/70 text-cream rounded-full p-2.5 transition-all backdrop-blur-sm cursor-pointer z-10 shadow-lg"
             aria-label={paused ? "เล่นต่อ" : "หยุดชั่วคราว"}
           >
@@ -102,7 +114,7 @@ export default function AutoScrollGallery() {
           {images.map((img, i) => (
             <button
               key={img.src}
-              onClick={() => { setCurrent(i); setPaused(true) }}
+              onClick={() => goTo(i)}
               role="tab"
               aria-selected={i === current}
               aria-label={`ภาพที่ ${i + 1}: ${img.alt}`}
