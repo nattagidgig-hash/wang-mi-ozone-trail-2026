@@ -262,7 +262,7 @@ export default function SocialCards({ cards }: SocialCardsProps) {
                 <img src={card.imgUrl} loading="lazy" alt={card.alt || `Card ${index}`} className="absolute inset-0 w-full h-full object-cover z-10" />
               </div>
             );
-            const cardStyle = "fan-card block w-36 h-52 sm:w-44 sm:h-64 md:w-52 md:h-72 lg:w-56 lg:h-80 rounded-2xl overflow-hidden shadow-xl";
+            const cardStyle = "fan-card block w-28 sm:w-36 md:w-44 lg:w-52 aspect-[3/4] rounded-2xl overflow-hidden shadow-xl";
             return card.linkUrl ? (
               <a key={index} href={card.linkUrl} target={card.linkUrl.startsWith("http") ? "_blank" : "_self"} rel="noopener noreferrer" className={cardStyle + " cursor-pointer"}>{image}</a>
             ) : (
